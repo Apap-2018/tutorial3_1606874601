@@ -8,5 +8,8 @@ public interface PilotService {
 	void addPilot (PilotModel pilot);
 	List<PilotModel> getPilotList();
 	PilotModel getPilotDetailByLicenseNumber(String licenseNumber);
+	void update(String licenseNumber, Integer flyHour);
+	PilotModel getPilotDetailById(String id);
+	void delete(String id);
 
 }

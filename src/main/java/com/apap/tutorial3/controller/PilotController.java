@@ -45,18 +45,47 @@ public class PilotController {
 	}
 
 	@RequestMapping(value = { "/pilot/view/license-number", "pilot/view/license-number/{licenseNumber}" })
-	public String viewPath(@PathVariable Optional<String> licenseNumber, Model model) {
+	public String viewPilot(@PathVariable Optional<String> licenseNumber, Model model) {
 		if (licenseNumber.isPresent()) {
 			List<PilotModel> archive = pilotService.getPilotList();
 
 			for (PilotModel pilot : archive) {
 				if (pilot.getLicenseNumber().equals(licenseNumber.get())) {
 					model.addAttribute("pilot", pilot);
-					return "view-pilot-license";
+					return "view-pilot";
 				}
 			}
 		}
-		return "view-pilot-license-error";
+		return "view-error";
 	}
+
+	@RequestMapping(value = {"/pilot/update/fly-hour/{flyHour}",
+			"/pilot/update/license-number/{licenseNumber}/fly-hour",
+			"/pilot/update/license-number/{licenseNumber}/fly-hour/{flyHour}" })
+	public String update(@PathVariable Optional<String> licenseNumber, @PathVariable Integer flyHour, Model model) {
+		
+		if (licenseNumber.isPresent()) {
+			if (pilotService.getPilotDetailByLicenseNumber(licenseNumber.get()) == null) {
+				return "update-error";
+			}
+
+			pilotService.update(licenseNumber.get(), flyHour);
+			return "update";
+		}
+		return "update-error";
+	}
+	
+	@RequestMapping(value = {"/pilot/delete","/pilot/delete/id", "/pilot/delete/id/{id}" })
+	public String delete(@PathVariable Optional<String> id, Model model) {
+		if(id.isPresent()) {
+			if (pilotService.getPilotDetailById(id.get()) == null) {
+				return "delete-error";
+			}
+			pilotService.delete(id.get());
+			return "delete";
+		}
+		return "delete-error";
+	}
+	
 
 }
